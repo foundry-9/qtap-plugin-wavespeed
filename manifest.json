@@ -1,0 +1,50 @@
+{
+  "$schema": "https://raw.githubusercontent.com/foundry-9/quilltap/refs/heads/main/plugins/dist/qtap-plugin-template/schemas/plugin-manifest.schema.json",
+  "name": "@quilltap/qtap-plugin-wavespeed",
+  "title": "WaveSpeed",
+  "description": "Fast image generation for Quilltap using WaveSpeedAI Z Image models",
+  "version": "1.0.0",
+  "author": {
+    "name": "Charles Sebold",
+    "email": "charles.sebold@foundry-9.com"
+  },
+  "license": "MIT",
+  "main": "dist/index.js",
+  "compatibility": {
+    "quilltapVersion": ">=1.7.0",
+    "nodeVersion": ">=18.0.0"
+  },
+  "capabilities": ["LLM_PROVIDER", "IMAGE_PROVIDER"],
+  "category": "PROVIDER",
+  "typescript": true,
+  "enabledByDefault": true,
+  "status": "STABLE",
+  "providerConfig": {
+    "providerName": "WAVESPEED",
+    "displayName": "WaveSpeed",
+    "description": "Fast text-to-image generation with WaveSpeedAI",
+    "abbreviation": "WS",
+    "colors": {
+      "bg": "bg-cyan-100",
+      "text": "text-cyan-900",
+      "icon": "text-cyan-600"
+    },
+    "requiresApiKey": true,
+    "requiresBaseUrl": false,
+    "apiKeyLabel": "WaveSpeed API Key",
+    "capabilities": {
+      "chat": false,
+      "imageGeneration": true,
+      "embeddings": false,
+      "webSearch": false
+    },
+    "attachmentSupport": {
+      "supported": false,
+      "mimeTypes": [],
+      "description": "No file attachments supported"
+    }
+  },
+  "permissions": {
+    "network": ["api.wavespeed.ai"]
+  }
+}

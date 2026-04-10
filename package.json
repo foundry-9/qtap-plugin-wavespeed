@@ -1,0 +1,48 @@
+{
+  "name": "@quilltap/qtap-plugin-wavespeed",
+  "version": "1.0.0",
+  "description": "WaveSpeed image provider plugin for Quilltap",
+  "main": "dist/index.js",
+  "license": "MIT",
+  "author": "Charles Sebold <charles.sebold@foundry-9.com>",
+  "keywords": [
+    "quilltap",
+    "plugin",
+    "wavespeed",
+    "image-generation",
+    "ai-art"
+  ],
+  "files": [
+    "dist",
+    "manifest.json"
+  ],
+  "type": "commonjs",
+  "scripts": {
+    "build": "esbuild index.ts --bundle --platform=node --outfile=dist/index.js --format=cjs",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run build"
+  },
+  "peerDependencies": {
+    "@quilltap/plugin-types": "^2.2.0",
+    "@quilltap/plugin-utils": "^2.2.0"
+  },
+  "peerDependenciesMeta": {
+    "@quilltap/plugin-types": {
+      "optional": false
+    },
+    "@quilltap/plugin-utils": {
+      "optional": false
+    }
+  },
+  "devDependencies": {
+    "@quilltap/plugin-types": "^2.2.0",
+    "@quilltap/plugin-utils": "^2.2.0",
+    "esbuild": "^0.28.0"
+  },
+  "dependencies": {
+    "wavespeed": "^0.2.3"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
