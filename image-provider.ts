@@ -7,7 +7,7 @@ import type {
 
 const API_BASE_URL = 'https://api.wavespeed.ai';
 const DEFAULT_MODEL = 'wavespeed-ai/z-image/turbo';
-const DEFAULT_SIZE = '1024*1024';
+const DEFAULT_SIZE = '1024x1024';
 
 const FALLBACK_MODELS = [
   'wavespeed-ai/z-image/turbo',
@@ -21,13 +21,13 @@ const availableModelsCache = new Map<
 >();
 
 const ASPECT_RATIO_TO_SIZE: Record<string, string> = {
-  '1:1': '1024*1024',
-  '16:9': '1536*864',
-  '9:16': '864*1536',
-  '4:3': '1536*1152',
-  '3:4': '1152*1536',
-  '3:2': '1536*1024',
-  '2:3': '1024*1536',
+  '1:1': '1024x1024',
+  '16:9': '1536x864',
+  '9:16': '864x1536',
+  '4:3': '1536x1152',
+  '3:4': '1152x1536',
+  '3:2': '1536x1024',
+  '2:3': '1024x1536',
 };
 
 type GeneratedImage = ImageGenResponse['images'][number];
@@ -74,10 +74,12 @@ export class WaveSpeedImageProvider implements ImageGenProvider {
     const model = this.normalizeModel(params.model);
     const client = new Client(apiKey.trim());
     const size = normalizeSize(params.size, params.aspectRatio);
+    const [width, height] = size.split('x').map(Number);
 
     const request: Record<string, unknown> = {
       prompt: params.prompt.trim(),
-      size,
+      width,
+      height,
       seed: typeof params.seed === 'number' ? params.seed : -1,
       output_format: 'png',
       enable_base64_output: true,
@@ -289,8 +291,8 @@ function isTextToImageModel(model: WaveSpeedModelRecord): boolean {
 
 function normalizeSize(size?: string, aspectRatio?: string): string {
   if (size?.trim()) {
-    const normalized = size.trim().replace(/\s+/g, '').replace(/x/gi, '*');
-    if (/^\d+\*\d+$/.test(normalized)) {
+    const normalized = size.trim().replace(/\s+/g, '').replace(/\*/g, 'x').toLowerCase();
+    if (/^\d+x\d+$/.test(normalized)) {
       return normalized;
     }
   }

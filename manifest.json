@@ -3,7 +3,7 @@
   "name": "@quilltap/qtap-plugin-wavespeed",
   "title": "WaveSpeed",
   "description": "Fast image generation for Quilltap using WaveSpeedAI Z Image models",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "author": {
     "name": "Charles Sebold",
     "email": "charles.sebold@foundry-9.com"
