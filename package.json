@@ -1,6 +1,6 @@
 {
   "name": "@quilltap/qtap-plugin-wavespeed",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "WaveSpeed image provider plugin for Quilltap",
   "main": "dist/index.js",
   "license": "MIT",
@@ -35,14 +35,18 @@
     }
   },
   "devDependencies": {
-    "@quilltap/plugin-types": "^2.2.0",
-    "@quilltap/plugin-utils": "^2.2.0",
-    "esbuild": "^0.28.0"
+    "@quilltap/plugin-types": "^2.5.4",
+    "@quilltap/plugin-utils": "^2.2.14",
+    "@types/node": "^24.13.3",
+    "esbuild": "^0.28.1"
   },
   "dependencies": {
-    "wavespeed": "^0.2.3"
+    "wavespeed": "^0.2.5"
   },
   "publishConfig": {
     "access": "public"
+  },
+  "allowScripts": {
+    "esbuild@0.28.1": true
   }
 }
