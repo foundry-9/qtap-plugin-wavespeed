@@ -1,4 +1,8 @@
-import type { ImageGenerationModelInfo, LLMProviderPlugin } from './types';
+import type {
+  ImageGenerationModelInfo,
+  ImageOrientationSupport,
+  LLMProviderPlugin,
+} from './types';
 import { WaveSpeedImageProvider } from './image-provider';
 
 const SUPPORTED_SIZES = [
@@ -7,9 +11,21 @@ const SUPPORTED_SIZES = [
   '1024x1536',
   '1536x864',
   '864x1536',
+  '1536x1152',
+  '1152x1536',
 ];
 
-const SUPPORTED_ASPECT_RATIOS = ['1:1', '16:9', '9:16', '3:2', '2:3'];
+const SUPPORTED_ASPECT_RATIOS = ['1:1', '3:2', '2:3', '16:9', '9:16', '4:3', '3:4'];
+
+// How WaveSpeed realises each semantic orientation. WaveSpeed's shape control is
+// a concrete pixel `size` string, so strategy is 'size'. The host resolver uses
+// this to turn a user's orientation choice into a `size` before generateImage.
+const ORIENTATION_SUPPORT: ImageOrientationSupport = {
+  strategy: 'size',
+  square: { size: '1024x1024', nominalWidth: 1024, nominalHeight: 1024 },
+  landscape: { size: '1536x1024', nominalWidth: 1536, nominalHeight: 1024 },
+  portrait: { size: '1024x1536', nominalWidth: 1024, nominalHeight: 1536 },
+};
 
 const metadata = {
   providerName: 'WAVESPEED',
@@ -49,6 +65,7 @@ const imageModels: ImageGenerationModelInfo[] = [
     name: 'Z Image Turbo',
     supportedSizes: SUPPORTED_SIZES,
     supportedAspectRatios: SUPPORTED_ASPECT_RATIOS,
+    orientationSupport: ORIENTATION_SUPPORT,
     description: 'Fastest WaveSpeed text-to-image model for interactive use.',
   },
   {
@@ -56,6 +73,7 @@ const imageModels: ImageGenerationModelInfo[] = [
     name: 'Z Image Base',
     supportedSizes: SUPPORTED_SIZES,
     supportedAspectRatios: SUPPORTED_ASPECT_RATIOS,
+    orientationSupport: ORIENTATION_SUPPORT,
     description:
       'Higher-control model with negative prompt support and flexible sizing.',
   },
@@ -92,6 +110,7 @@ export const plugin: LLMProviderPlugin = {
     maxImagesPerRequest: 1,
     supportedSizes: SUPPORTED_SIZES,
     supportedAspectRatios: SUPPORTED_ASPECT_RATIOS,
+    orientationSupport: ORIENTATION_SUPPORT,
     promptingGuidance: `# WaveSpeed Image Prompting Guide
 
 ## Recommended structure

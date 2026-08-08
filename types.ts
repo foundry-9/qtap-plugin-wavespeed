@@ -7,6 +7,7 @@ export type {
   FileAttachment,
   ImageGenParams,
   ImageGenResponse,
+  ImageOrientation,
 } from '@quilltap/plugin-types';
 
 export type { ImageGenProvider } from '@quilltap/plugin-types';
@@ -20,6 +21,7 @@ export type {
   ModelInfo,
   ImageProviderConstraints,
   ImageGenerationModelInfo,
+  ImageOrientationSupport,
   UniversalTool,
   ToolFormatOptions,
   ToolCallRequest,

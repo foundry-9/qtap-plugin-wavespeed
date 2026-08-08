@@ -3,6 +3,7 @@ import type {
   ImageGenParams,
   ImageGenProvider,
   ImageGenResponse,
+  ImageOrientation,
 } from './types';
 
 const API_BASE_URL = 'https://api.wavespeed.ai';
@@ -20,6 +21,8 @@ const availableModelsCache = new Map<
   { expiresAt: number; models: string[] }
 >();
 
+// Aspect ratios the host may request, mapped to concrete WaveSpeed sizes.
+// Kept in sync with SUPPORTED_ASPECT_RATIOS / SUPPORTED_SIZES in index.ts.
 const ASPECT_RATIO_TO_SIZE: Record<string, string> = {
   '1:1': '1024x1024',
   '16:9': '1536x864',
@@ -28,6 +31,14 @@ const ASPECT_RATIO_TO_SIZE: Record<string, string> = {
   '3:4': '1152x1536',
   '3:2': '1536x1024',
   '2:3': '1024x1536',
+};
+
+// Fallback size for a bare semantic orientation, used only when the host did
+// not already resolve `orientation` into a concrete `size`/`aspectRatio`.
+const ORIENTATION_TO_SIZE: Record<ImageOrientation, string> = {
+  square: '1024x1024',
+  landscape: '1536x1024',
+  portrait: '1024x1536',
 };
 
 type GeneratedImage = ImageGenResponse['images'][number];
@@ -73,13 +84,13 @@ export class WaveSpeedImageProvider implements ImageGenProvider {
 
     const model = this.normalizeModel(params.model);
     const client = new Client(apiKey.trim());
-    const size = normalizeSize(params.size, params.aspectRatio);
-    const [width, height] = size.split('x').map(Number);
+    const size = normalizeSize(params.size, params.aspectRatio, params.orientation);
 
     const request: Record<string, unknown> = {
       prompt: params.prompt.trim(),
-      width,
-      height,
+      // WaveSpeed expects a single `size` string in "width*height" form
+      // (e.g. "1024*1024"); it does not accept separate width/height fields.
+      size: size.replace('x', '*'),
       seed: typeof params.seed === 'number' ? params.seed : -1,
       output_format: 'png',
       enable_base64_output: true,
@@ -289,7 +300,14 @@ function isTextToImageModel(model: WaveSpeedModelRecord): boolean {
   });
 }
 
-function normalizeSize(size?: string, aspectRatio?: string): string {
+function normalizeSize(
+  size?: string,
+  aspectRatio?: string,
+  orientation?: ImageOrientation
+): string {
+  // The host resolver normally writes a concrete `size` (or `aspectRatio`)
+  // before calling us, based on the orientationSupport we declare. We still
+  // handle each field defensively, most specific first.
   if (size?.trim()) {
     const normalized = size.trim().replace(/\s+/g, '').replace(/\*/g, 'x').toLowerCase();
     if (/^\d+x\d+$/.test(normalized)) {
@@ -299,6 +317,10 @@ function normalizeSize(size?: string, aspectRatio?: string): string {
 
   if (aspectRatio && ASPECT_RATIO_TO_SIZE[aspectRatio]) {
     return ASPECT_RATIO_TO_SIZE[aspectRatio];
+  }
+
+  if (orientation && ORIENTATION_TO_SIZE[orientation]) {
+    return ORIENTATION_TO_SIZE[orientation];
   }
 
   return DEFAULT_SIZE;
